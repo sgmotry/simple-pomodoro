@@ -1,0 +1,17 @@
+{
+  "name": "nodejs dev",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "postCreateCommand": "pnpm install",
+  "forwardPorts": [3000],
+  "mounts": ["source=node_modules,target=/app/node_modules,type=volume"],
+  "remoteUser": "node"
+}
