@@ -10,6 +10,6 @@ datasource db {
 
 model WorkLog {
   id        Int      @id @default(autoincrement())
-  date DateTime @default(now())
-  duration  Int      // 作業時間 (秒)
+  date      DateTime @default(now()) // 記録日時
+  duration  Int      // 秒単位の作業時間
 }
