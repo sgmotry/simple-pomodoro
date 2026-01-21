@@ -76,7 +76,11 @@ const NumberInput = ({
   );
 };
 
-export default function PomodoroTimer() {
+type PomodoroTimerProps = {
+  onTimerActiveChange?: (isActive: boolean) => void;
+};
+
+export default function PomodoroTimer({ onTimerActiveChange }: PomodoroTimerProps) {
   // --- 設定値 (Settings) ---
   const [targetLoopsStr, setTargetLoopsStr] = useState("3");
   const [workMinutesStr, setWorkMinutesStr] = useState("25");
@@ -272,6 +276,15 @@ export default function PomodoroTimer() {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [status, timeLeft, mode]);
+
+  useEffect(() => {
+    if (onTimerActiveChange) {
+      // running または paused の時は画面遷移をロックする (true)
+      // idle または finished の時はロック解除 (false)
+      const shouldLock = status === "running" || status === "paused";
+      onTimerActiveChange(shouldLock);
+    }
+  }, [status, onTimerActiveChange]);
 
   // 現在が長い休憩かどうか判定
   const isCurrentLongBreak = mode === "rest" && currentLoop % 4 === 0;

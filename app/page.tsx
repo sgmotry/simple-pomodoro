@@ -9,6 +9,7 @@ type Tab = "timer" | "statistics";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("timer");
+  const [isTimerLocked, setIsTimerLocked] = useState(false);
 
   return (
     <div className="mr-auto ml-auto h-[90vh] w-[90vw] font-sans">
@@ -31,8 +32,12 @@ export default function Home() {
         </button>
         <button
           onClick={() => setActiveTab("statistics")}
+          disabled={isTimerLocked} // ロック中はクリック無効
           className={`flex items-center space-x-2 rounded-full px-6 py-2 transition-all duration-300 ${
-            activeTab === "statistics"
+            // ロック中のスタイル設定 (優先度高)
+            isTimerLocked
+              ? "bg-slate-100 text-slate-300 cursor-not-allowed opacity-60"
+              : activeTab === "statistics"
               ? "bg-slate-800 text-white shadow-lg scale-105"
               : "bg-white text-slate-400 hover:bg-slate-50 hover:text-slate-600"
           }`}
@@ -44,7 +49,7 @@ export default function Home() {
 
       {/* コンテンツ表示エリア */}
       <div className="transition-opacity duration-300">
-        {activeTab === "timer" ? <PomodoroTimer /> : <Statistics />}
+        {activeTab === "timer" ? <PomodoroTimer onTimerActiveChange={setIsTimerLocked} /> : <Statistics />}
       </div>
     </div>
   );
