@@ -99,6 +99,20 @@ export default function PomodoroTimer() {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // --- APIへ保存する関数 ---
+  const saveWorkLog = async (duration: number) => {
+    if (duration <= 0) return;
+    try {
+      await fetch("/api/worklog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ duration }),
+      });
+    } catch (error) {
+      console.error("Failed to save work log", error);
+    }
+  };
+
   // --- 設定変更ロジック ---
   const adjustValue = (
     currentStr: string,
@@ -196,6 +210,9 @@ export default function PomodoroTimer() {
   const finishSession = () => {
     setStatus("finished");
     if (timerRef.current) clearInterval(timerRef.current);
+
+    // 現在の totalWorkSeconds を保存する
+    saveWorkLog(totalWorkSeconds);
   };
 
   const resetToHome = () => {
@@ -278,7 +295,7 @@ export default function PomodoroTimer() {
   const dashOffset = circumference * (1 - progressVal);
 
   return (
-    <div className="flex min-h-[80vh] scale-125 items-center justify-center p-4">
+    <div className="flex scale-125 items-center justify-center p-4 m-50">
       <div
         className="relative flex items-center justify-center"
         style={{ width: overallSize, height: overallSize }}
