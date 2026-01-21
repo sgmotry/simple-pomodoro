@@ -190,7 +190,7 @@ export default function Statistics() {
       <div className="mt-8 flex gap-8 text-slate-600">
         <div className="flex flex-col items-center">
           <span className="text-xl text-slate-600">今月の合計</span>
-          <span className="font-mono text-2xl font-bold">
+          <span className="text-2xl font-bold">
             {(() => {
               const monthLogs = logs.filter(
                 (l) =>
