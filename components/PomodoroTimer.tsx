@@ -295,7 +295,7 @@ export default function PomodoroTimer() {
   const dashOffset = circumference * (1 - progressVal);
 
   return (
-    <div className="flex scale-125 items-center justify-center p-4 m-50">
+    <div className="flex scale-125 items-center justify-center p-4 m-40">
       <div
         className="relative flex items-center justify-center"
         style={{ width: overallSize, height: overallSize }}
