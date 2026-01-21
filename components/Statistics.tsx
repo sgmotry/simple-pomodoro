@@ -110,7 +110,7 @@ export default function Statistics() {
       <div className="mb-6 flex w-full max-w-md items-center justify-between">
         <button
           onClick={() => changeMonth(-1)}
-          className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100"
+          className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100 cursor-pointer"
         >
           <ChevronLeft />
         </button>
@@ -119,7 +119,7 @@ export default function Statistics() {
         </h2>
         <button
           onClick={() => changeMonth(1)}
-          className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100"
+          className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100 cursor-pointer"
         >
           <ChevronRight />
         </button>

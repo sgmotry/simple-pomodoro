@@ -21,7 +21,7 @@ export default function Home() {
       <div className="mb-6 flex justify-center space-x-4">
         <button
           onClick={() => setActiveTab("timer")}
-          className={`flex items-center space-x-2 rounded-full px-6 py-2 transition-all duration-300 ${
+          className={`flex items-center space-x-2 rounded-full px-6 py-2 transition-all duration-300 cursor-pointer ${
             activeTab === "timer"
               ? "scale-105 bg-slate-800 text-white shadow-lg"
               : "bg-white text-slate-400 hover:bg-slate-50 hover:text-slate-600"
@@ -33,7 +33,7 @@ export default function Home() {
         <button
           onClick={() => setActiveTab("statistics")}
           disabled={isTimerLocked} // ロック中はクリック無効
-          className={`flex items-center space-x-2 rounded-full px-6 py-2 transition-all duration-300 ${
+          className={`flex items-center space-x-2 rounded-full px-6 py-2 transition-all duration-300 cursor-pointer ${
             // ロック中のスタイル設定 (優先度高)
             isTimerLocked
               ? "cursor-not-allowed bg-slate-100 text-slate-300 opacity-60"
