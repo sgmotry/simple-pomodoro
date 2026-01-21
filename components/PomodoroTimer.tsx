@@ -80,7 +80,9 @@ type PomodoroTimerProps = {
   onTimerActiveChange?: (isActive: boolean) => void;
 };
 
-export default function PomodoroTimer({ onTimerActiveChange }: PomodoroTimerProps) {
+export default function PomodoroTimer({
+  onTimerActiveChange,
+}: PomodoroTimerProps) {
   // --- 設定値 (Settings) ---
   const [targetLoopsStr, setTargetLoopsStr] = useState("3");
   const [workMinutesStr, setWorkMinutesStr] = useState("25");
@@ -308,7 +310,7 @@ export default function PomodoroTimer({ onTimerActiveChange }: PomodoroTimerProp
   const dashOffset = circumference * (1 - progressVal);
 
   return (
-    <div className="flex scale-125 items-center justify-center p-4 m-40">
+    <div className="m-40 flex scale-125 items-center justify-center p-4">
       <div
         className="relative flex items-center justify-center"
         style={{ width: overallSize, height: overallSize }}

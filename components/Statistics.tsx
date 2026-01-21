@@ -82,10 +82,10 @@ export default function Statistics() {
   // 指定した日付の合計時間を計算
   const getDailyTotal = (date: Date) => {
     const targetLogs = logs.filter((log) =>
-      isSameDay(new Date(log.date), date)
+      isSameDay(new Date(log.date), date),
     );
     const totalSeconds = targetLogs.reduce((acc, cur) => acc + cur.duration, 0);
-    
+
     if (totalSeconds === 0) return null;
 
     // カレンダー内は 00:00:00 形式
@@ -107,10 +107,10 @@ export default function Statistics() {
   return (
     <div className="flex h-full w-full flex-col items-center p-4">
       {/* ヘッダー: 月切り替え */}
-      <div className="mb-6 flex items-center justify-between w-full max-w-md">
+      <div className="mb-6 flex w-full max-w-md items-center justify-between">
         <button
           onClick={() => changeMonth(-1)}
-          className="rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors"
+          className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100"
         >
           <ChevronLeft />
         </button>
@@ -119,21 +119,25 @@ export default function Statistics() {
         </h2>
         <button
           onClick={() => changeMonth(1)}
-          className="rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors"
+          className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100"
         >
           <ChevronRight />
         </button>
       </div>
 
       {/* カレンダーグリッド */}
-      <div className="grid grid-cols-7 gap-2 w-full max-w-4xl">
+      <div className="grid w-full max-w-4xl grid-cols-7 gap-2">
         {/* 曜日ヘッダー */}
         {["日", "月", "火", "水", "木", "金", "土"].map((day, i) => (
           <div
             key={day}
             className={classNames(
-              "text-center text-sm font-bold py-2",
-              i === 0 ? "text-pink-400" : i === 6 ? "text-blue-400" : "text-slate-400"
+              "py-2 text-center text-sm font-bold",
+              i === 0
+                ? "text-pink-400"
+                : i === 6
+                  ? "text-blue-400"
+                  : "text-slate-400",
             )}
           >
             {day}
@@ -149,28 +153,30 @@ export default function Statistics() {
         {daysInMonth.map((day) => {
           const dailyTotal = getDailyTotal(day);
           const isToday = isSameDay(day, new Date());
-          
+
           return (
             <div
               key={day.toISOString()}
               className={classNames(
                 "relative flex aspect-video flex-col items-center justify-start rounded-xl border p-1 transition-all",
-                isToday ? "border-cyan-400 bg-cyan-50" : "border-slate-100 bg-white",
-                dailyTotal ? "hover:shadow-md" : ""
+                isToday
+                  ? "border-cyan-400 bg-cyan-50"
+                  : "border-slate-100 bg-white",
+                dailyTotal ? "hover:shadow-md" : "",
               )}
             >
               <span
                 className={classNames(
-                  "text-xs font-medium mb-1 rounded-full w-6 h-6 flex items-center justify-center",
-                  isToday ? "bg-cyan-500 text-white" : "text-slate-500"
+                  "mb-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium",
+                  isToday ? "bg-cyan-500 text-white" : "text-slate-500",
                 )}
               >
                 {format(day, "d")}
               </span>
-              
+
               {dailyTotal && (
-                <div className="flex flex-1 items-center justify-center w-full">
-                  <span className="text-[10px] sm:text-[1rem] font-bold text-slate-700 bg-slate-100 px-0.5 rounded-md w-full text-center truncate tracking-tighter">
+                <div className="flex w-full flex-1 items-center justify-center">
+                  <span className="w-full truncate rounded-md bg-slate-100 px-0.5 text-center text-[10px] font-bold tracking-tighter text-slate-700 sm:text-[1rem]">
                     {dailyTotal}
                   </span>
                 </div>
@@ -179,18 +185,23 @@ export default function Statistics() {
           );
         })}
       </div>
-      
+
       {/* 統計サマリー */}
       <div className="mt-8 flex gap-8 text-slate-600">
         <div className="flex flex-col items-center">
           <span className="text-xl text-slate-600">今月の合計</span>
-          <span className="text-2xl font-bold font-mono">
+          <span className="font-mono text-2xl font-bold">
             {(() => {
-              const monthLogs = logs.filter(l => 
-                format(new Date(l.date), "yyyy-MM") === format(currentDate, "yyyy-MM")
+              const monthLogs = logs.filter(
+                (l) =>
+                  format(new Date(l.date), "yyyy-MM") ===
+                  format(currentDate, "yyyy-MM"),
               );
-              const total = monthLogs.reduce((acc, cur) => acc + cur.duration, 0);
-              
+              const total = monthLogs.reduce(
+                (acc, cur) => acc + cur.duration,
+                0,
+              );
+
               return formatTimeJP(total);
             })()}
           </span>

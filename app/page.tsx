@@ -23,7 +23,7 @@ export default function Home() {
           onClick={() => setActiveTab("timer")}
           className={`flex items-center space-x-2 rounded-full px-6 py-2 transition-all duration-300 ${
             activeTab === "timer"
-              ? "bg-slate-800 text-white shadow-lg scale-105"
+              ? "scale-105 bg-slate-800 text-white shadow-lg"
               : "bg-white text-slate-400 hover:bg-slate-50 hover:text-slate-600"
           }`}
         >
@@ -36,10 +36,10 @@ export default function Home() {
           className={`flex items-center space-x-2 rounded-full px-6 py-2 transition-all duration-300 ${
             // ロック中のスタイル設定 (優先度高)
             isTimerLocked
-              ? "bg-slate-100 text-slate-300 cursor-not-allowed opacity-60"
+              ? "cursor-not-allowed bg-slate-100 text-slate-300 opacity-60"
               : activeTab === "statistics"
-              ? "bg-slate-800 text-white shadow-lg scale-105"
-              : "bg-white text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+                ? "scale-105 bg-slate-800 text-white shadow-lg"
+                : "bg-white text-slate-400 hover:bg-slate-50 hover:text-slate-600"
           }`}
         >
           <BarChart3 size={18} />
@@ -49,7 +49,11 @@ export default function Home() {
 
       {/* コンテンツ表示エリア */}
       <div className="transition-opacity duration-300">
-        {activeTab === "timer" ? <PomodoroTimer onTimerActiveChange={setIsTimerLocked} /> : <Statistics />}
+        {activeTab === "timer" ? (
+          <PomodoroTimer onTimerActiveChange={setIsTimerLocked} />
+        ) : (
+          <Statistics />
+        )}
       </div>
     </div>
   );
