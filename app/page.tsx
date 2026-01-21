@@ -2,7 +2,7 @@ import PomodoroTimer from "@/components/PomodoroTimer";
 
 export default function Home() {
   return (
-    <div className="mr-auto ml-auto h-[90vh] w-[90vw]">
+    <div className="mr-auto ml-auto h-[90vh] w-[90vw] font-sans">
       <div className="m-5 text-center text-5xl text-slate-700 text-shadow-slate-400 text-shadow-xs">
         Simple Pomodoro
       </div>
