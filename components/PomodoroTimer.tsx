@@ -41,14 +41,14 @@ const NumberInput = ({
 
   return (
     <div className="z-20 flex flex-col items-center">
-      <span className="mb-1 text-xs font-medium text-slate-500">{label}</span>
-      <div className="group flex h-24 w-20 flex-col items-center justify-center rounded-full border border-slate-100 bg-slate-50 shadow-inner transition-colors focus-within:border-cyan-300">
+      <span className="mb-1 text-[10px] font-medium text-slate-500">{label}</span>
+      <div className="group flex h-20 w-16 flex-col items-center justify-center rounded-full border border-slate-100 bg-slate-50 shadow-inner transition-colors focus-within:border-cyan-300">
         <button
           onClick={onIncrement}
           className="p-1 text-slate-400 transition-colors hover:text-cyan-500 focus:outline-none"
           tabIndex={-1}
         >
-          <ChevronUp size={20} />
+          <ChevronUp size={16} />
         </button>
 
         <input
@@ -59,7 +59,7 @@ const NumberInput = ({
           onChange={onChange}
           onBlur={onBlur}
           onKeyDown={handleKeyDown}
-          className="my-1 w-full border-none bg-transparent p-0 text-center text-2xl font-bold text-slate-700 focus:ring-0"
+          className="my-0 w-full border-none bg-transparent p-0 text-center text-xl font-bold text-slate-700 focus:ring-0"
         />
 
         <button
@@ -67,7 +67,7 @@ const NumberInput = ({
           className="p-1 text-slate-400 transition-colors hover:text-cyan-500 focus:outline-none"
           tabIndex={-1}
         >
-          <ChevronDown size={20} />
+          <ChevronDown size={16} />
         </button>
       </div>
     </div>
@@ -76,9 +76,10 @@ const NumberInput = ({
 
 export default function PomodoroTimer() {
   // --- 設定値 (Settings) ---
-  const [targetLoopsStr, setTargetLoopsStr] = useState("4");
+  const [targetLoopsStr, setTargetLoopsStr] = useState("3");
   const [workMinutesStr, setWorkMinutesStr] = useState("25");
   const [restMinutesStr, setRestMinutesStr] = useState("5");
+  const [longRestMinutesStr, setLongRestMinutesStr] = useState("15");
 
   const targetLoops = parseInt(targetLoopsStr) || 1;
 
@@ -137,6 +138,7 @@ export default function PomodoroTimer() {
     const finalWork = sanitize(workMinutesStr);
     setWorkMinutesStr(finalWork);
     setRestMinutesStr((prev) => sanitize(prev));
+    setLongRestMinutesStr((prev) => sanitize(prev));
     return parseInt(finalWork);
   };
 
@@ -145,11 +147,12 @@ export default function PomodoroTimer() {
     if (status === "idle") {
       const w = parseInt(workMinutesStr) || 25;
       const r = parseInt(restMinutesStr) || 5;
+      // アイドル時は通常休憩か作業時間のプレビューのみでOK
       const newTotalTime = mode === "work" ? w * 60 : r * 60;
       setTimeLeft(newTotalTime);
       setTotalTime(newTotalTime);
     }
-  }, [workMinutesStr, restMinutesStr, mode, status]);
+  }, [workMinutesStr, restMinutesStr, longRestMinutesStr, mode, status]);
 
   // タイマーカウントダウン & 作業時間計測
   useEffect(() => {
@@ -177,13 +180,17 @@ export default function PomodoroTimer() {
 
     const w = parseInt(workMinutesStr) || 25;
     const r = parseInt(restMinutesStr) || 5;
+    const lr = parseInt(longRestMinutesStr) || 15;
 
     if (mode === "work") {
       setMode("rest");
-      const t = r * 60;
+      // 4回目、8回目...の休憩は長い休憩にする
+      const isLongBreak = currentLoop % 4 === 0;
+      const t = (isLongBreak ? lr : r) * 60;
       setTimeLeft(t);
       setTotalTime(t);
     } else {
+      // 休憩終了 -> 次のループへ
       if (currentLoop < targetLoops) {
         setCurrentLoop((prev) => prev + 1);
         setMode("work");
@@ -208,7 +215,6 @@ export default function PomodoroTimer() {
       const t = finalWorkMinutes * 60;
       setTimeLeft(t);
       setTotalTime(t);
-      // 新規セッション開始時に累積時間をリセット
       setTotalWorkSeconds(0);
     }
     setStatus("running");
@@ -216,13 +222,11 @@ export default function PomodoroTimer() {
 
   const pauseTimer = () => setStatus("paused");
 
-  // セッション終了（中断または完了）して結果画面へ
   const finishSession = () => {
     setStatus("finished");
     if (timerRef.current) clearInterval(timerRef.current);
   };
 
-  // 完全リセット（結果画面からトップへ戻る）
   const resetToHome = () => {
     setStatus("idle");
     setMode("work");
@@ -236,7 +240,6 @@ export default function PomodoroTimer() {
 
   const skipPhase = () => handlePhaseComplete();
 
-  // 時間フォーマット (MM:SS)
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -244,13 +247,15 @@ export default function PomodoroTimer() {
     return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
-  // 作業時間フォーマット (X時間Y分)
   const formatDuration = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor((seconds % 3600) % 60);
     return `${h}時間${m}分${s}秒`;
   };
+
+  // 現在が長い休憩かどうか判定
+  const isCurrentLongBreak = mode === "rest" && currentLoop % 4 === 0;
 
   // --- SVG プログレスバー設定 ---
   const innerSize = 320;
@@ -261,20 +266,17 @@ export default function PomodoroTimer() {
   const radius = center - progressStrokeWidth / 2;
   const circumference = radius * 2 * Math.PI;
 
-  // idle, finished のときはプログレスバーを表示しない、または満タン/空にする
-  // ここでは finished のときは満タン表示にする等の演出も可能だが、
-  // シンプルにリセットされる挙動にするため progressVal を制御
   const progressVal =
     status === "idle" || totalTime === 0
       ? 0
       : status === "finished"
-        ? 1 // 完了時は100%表示のままにする
+        ? 1
         : 1 - timeLeft / totalTime;
 
   const dashOffset = circumference * (1 - progressVal);
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center p-4 font-sans scale-130">
+    <div className="flex min-h-[80vh] scale-125 items-center justify-center p-4">
       <div
         className="relative flex items-center justify-center"
         style={{ width: overallSize, height: overallSize }}
@@ -299,13 +301,14 @@ export default function PomodoroTimer() {
             cy={center}
             r={radius}
             fill="none"
-            // 完了画面ではグレー、それ以外はモードに応じた色
             stroke={
               status === "finished"
                 ? "#94a3b8"
                 : mode === "work"
                   ? "#22d3ee"
-                  : "#f472b6"
+                  : isCurrentLongBreak
+                    ? "#818cf8" 
+                    : "#f472b6"
             }
             strokeWidth={progressStrokeWidth}
             strokeDasharray={circumference}
@@ -343,7 +346,9 @@ export default function PomodoroTimer() {
                     inputMode="numeric"
                     value={targetLoopsStr}
                     maxLength={2}
-                    onChange={(e) => handleInputChange(e, setTargetLoopsStr)}
+                    onChange={(e) =>
+                      handleInputChange(e, setTargetLoopsStr)
+                    }
                     onBlur={() =>
                       handleInputBlur(targetLoopsStr, setTargetLoopsStr)
                     }
@@ -363,7 +368,9 @@ export default function PomodoroTimer() {
                   </button>
                 </div>
               </div>
-              <div className="flex items-center space-x-6">
+              
+              {/* 3列レイアウトに変更 */}
+              <div className="flex items-center space-x-3">
                 <NumberInput
                   label="作業 (分)"
                   valueStr={workMinutesStr}
@@ -392,14 +399,29 @@ export default function PomodoroTimer() {
                     adjustValue(restMinutesStr, setRestMinutesStr, -1)
                   }
                 />
+                <NumberInput
+                  label="長休憩（分）"
+                  valueStr={longRestMinutesStr}
+                  onChange={(e) => handleInputChange(e, setLongRestMinutesStr)}
+                  onBlur={() =>
+                    handleInputBlur(longRestMinutesStr, setLongRestMinutesStr)
+                  }
+                  onIncrement={() =>
+                    adjustValue(longRestMinutesStr, setLongRestMinutesStr, 1)
+                  }
+                  onDecrement={() =>
+                    adjustValue(longRestMinutesStr, setLongRestMinutesStr, -1)
+                  }
+                />
               </div>
+
               <button
                 onClick={startTimer}
-                className="group z-20 mt-2 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-tr from-slate-700 to-slate-900 text-white shadow-lg transition-all hover:scale-105 active:scale-95"
+                className="group z-20 mt-1 flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-tr from-slate-700 to-slate-900 text-white shadow-lg transition-all hover:scale-105 active:scale-95"
               >
                 <Play
                   fill="currentColor"
-                  className="ml-1 transition-colors group-hover:text-cyan-200"
+                  className="ml-1 "
                 />
               </button>
             </div>
@@ -413,16 +435,25 @@ export default function PomodoroTimer() {
                   {currentLoop} / {targetLoops}
                 </span>
                 <span
-                  className={`text-lg font-bold ${mode === "work" ? "text-cyan-600" : "text-pink-500"}`}
+                  className={`text-lg font-bold ${
+                    mode === "work"
+                      ? "text-cyan-600"
+                      : isCurrentLongBreak
+                        ? "text-indigo-500"
+                        : "text-pink-500"
+                  }`}
                 >
-                  {mode === "work" ? "作業中" : "休憩中"}
+                  {mode === "work"
+                    ? "作業中"
+                    : isCurrentLongBreak
+                      ? "長休憩中"
+                      : "休憩中"}
                 </span>
               </div>
               <div className="mb-8 text-6xl tracking-tight text-slate-800 tabular-nums">
                 {formatTime(timeLeft)}
               </div>
               <div className="z-20 flex items-center space-x-6">
-                {/* 停止ボタン: リセットではなく結果画面へ遷移 */}
                 <button
                   onClick={finishSession}
                   className="rounded-full p-3 text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-600"
