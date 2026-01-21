@@ -10,21 +10,22 @@
 ### 前提条件
 
 * Node.js (v20.20推奨)
-* pnpm
+* pnpm（npmも可）
 
 ### インストール
 
 1. リポジトリをクローンする
 ```sh
 git clone https://github.com/your_username/simple-pomodoro.git
-
 ```
 
 
-2. NPMパッケージをインストールする
+2. 必要なパッケージをインストールする
 ```sh
 pnpm install
 
+# npmの場合
+npm install
 ```
 
 
@@ -32,13 +33,24 @@ pnpm install
 ```sh
 pnpm prisma migrate dev
 
+# npmの場合
+npx prisma migrate dev
 ```
 
+4. データベースクライアントを生成する
+```sh
+pnpm prisma generate
 
-4. 開発サーバーを起動する
+# npmの場合
+npx prisma generate
+```
+
+5. 開発サーバーを起動する
 ```sh
 pnpm dev
 
+# npmの場合
+npm run dev
 ```
 
 
@@ -68,7 +80,3 @@ pnpm dev
 2. **タイマーを開始する:** 再生ボタンをクリックして、最初の作業セッションを開始します。
 3. **サイクルに従う:** タイマーは自動的に作業モードと休憩モードを切り替えます。
 4. **進捗を追跡する:** 「統計 (Statistics)」タブに移動して、カレンダーで作業履歴を確認します。
-
----
-
-**次のステップ:** 翻訳に関して、特定の専門用語の調整や表現の変更をご希望の場合はお知らせください。
