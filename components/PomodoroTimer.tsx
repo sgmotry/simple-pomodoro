@@ -41,7 +41,9 @@ const NumberInput = ({
 
   return (
     <div className="z-20 flex flex-col items-center">
-      <span className="mb-1 text-[10px] font-medium text-slate-500">{label}</span>
+      <span className="mb-1 text-[10px] font-medium text-slate-500">
+        {label}
+      </span>
       <div className="group flex h-20 w-16 flex-col items-center justify-center rounded-full border border-slate-100 bg-slate-50 shadow-inner transition-colors focus-within:border-cyan-300">
         <button
           onClick={onIncrement}
@@ -142,37 +144,6 @@ export default function PomodoroTimer() {
     return parseInt(finalWork);
   };
 
-  // 設定変更時のプレビュー更新
-  useEffect(() => {
-    if (status === "idle") {
-      const w = parseInt(workMinutesStr) || 25;
-      const r = parseInt(restMinutesStr) || 5;
-      // アイドル時は通常休憩か作業時間のプレビューのみでOK
-      const newTotalTime = mode === "work" ? w * 60 : r * 60;
-      setTimeLeft(newTotalTime);
-      setTotalTime(newTotalTime);
-    }
-  }, [workMinutesStr, restMinutesStr, longRestMinutesStr, mode, status]);
-
-  // タイマーカウントダウン & 作業時間計測
-  useEffect(() => {
-    if (status === "running" && timeLeft > 0) {
-      timerRef.current = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-
-        // 作業モード中なら累積時間を加算
-        if (mode === "work") {
-          setTotalWorkSeconds((prev) => prev + 1);
-        }
-      }, 1000);
-    } else if (timeLeft === 0 && status === "running") {
-      handlePhaseComplete();
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [status, timeLeft, mode]);
-
   // フェーズ完了処理
   const handlePhaseComplete = () => {
     const audio = new Audio("/notification.mp3");
@@ -254,6 +225,37 @@ export default function PomodoroTimer() {
     return `${h}時間${m}分${s}秒`;
   };
 
+  // 設定変更時のプレビュー更新
+  useEffect(() => {
+    if (status === "idle") {
+      const w = parseInt(workMinutesStr) || 25;
+      const r = parseInt(restMinutesStr) || 5;
+      // アイドル時は通常休憩か作業時間のプレビューのみでOK
+      const newTotalTime = mode === "work" ? w * 60 : r * 60;
+      setTimeLeft(newTotalTime);
+      setTotalTime(newTotalTime);
+    }
+  }, [workMinutesStr, restMinutesStr, longRestMinutesStr, mode, status]);
+
+  // タイマーカウントダウン & 作業時間計測
+  useEffect(() => {
+    if (status === "running" && timeLeft > 0) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+
+        // 作業モード中なら累積時間を加算
+        if (mode === "work") {
+          setTotalWorkSeconds((prev) => prev + 1);
+        }
+      }, 1000);
+    } else if (timeLeft === 0 && status === "running") {
+      handlePhaseComplete();
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [status, timeLeft, mode]);
+
   // 現在が長い休憩かどうか判定
   const isCurrentLongBreak = mode === "rest" && currentLoop % 4 === 0;
 
@@ -307,7 +309,7 @@ export default function PomodoroTimer() {
                 : mode === "work"
                   ? "#22d3ee"
                   : isCurrentLongBreak
-                    ? "#818cf8" 
+                    ? "#818cf8"
                     : "#f472b6"
             }
             strokeWidth={progressStrokeWidth}
@@ -346,9 +348,7 @@ export default function PomodoroTimer() {
                     inputMode="numeric"
                     value={targetLoopsStr}
                     maxLength={2}
-                    onChange={(e) =>
-                      handleInputChange(e, setTargetLoopsStr)
-                    }
+                    onChange={(e) => handleInputChange(e, setTargetLoopsStr)}
                     onBlur={() =>
                       handleInputBlur(targetLoopsStr, setTargetLoopsStr)
                     }
@@ -368,7 +368,7 @@ export default function PomodoroTimer() {
                   </button>
                 </div>
               </div>
-              
+
               {/* 3列レイアウトに変更 */}
               <div className="flex items-center space-x-3">
                 <NumberInput
@@ -419,10 +419,7 @@ export default function PomodoroTimer() {
                 onClick={startTimer}
                 className="group z-20 mt-1 flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-tr from-slate-700 to-slate-900 text-white shadow-lg transition-all hover:scale-105 active:scale-95"
               >
-                <Play
-                  fill="currentColor"
-                  className="ml-1 "
-                />
+                <Play fill="currentColor" className="ml-1" />
               </button>
             </div>
           )}

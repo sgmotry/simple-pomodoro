@@ -13,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="jp">
-      <body
-        className={`bg-slate-100 antialiased overflow-hidden`}
-      >
+      <body className={`overflow-hidden bg-slate-100 antialiased`}>
         {children}
       </body>
     </html>
