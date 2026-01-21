@@ -274,7 +274,7 @@ export default function PomodoroTimer() {
   const dashOffset = circumference * (1 - progressVal);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-100 p-4 font-sans">
+    <div className="flex min-h-[80vh] items-center justify-center p-4 font-sans scale-130">
       <div
         className="relative flex items-center justify-center"
         style={{ width: overallSize, height: overallSize }}
@@ -418,7 +418,7 @@ export default function PomodoroTimer() {
                   {mode === "work" ? "作業中" : "休憩中"}
                 </span>
               </div>
-              <div className="mb-8 font-mono text-5xl font-bold tracking-tight text-slate-800 tabular-nums">
+              <div className="mb-8 text-6xl tracking-tight text-slate-800 tabular-nums">
                 {formatTime(timeLeft)}
               </div>
               <div className="z-20 flex items-center space-x-6">
