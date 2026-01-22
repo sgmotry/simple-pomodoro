@@ -55,7 +55,7 @@ pnpm dev
 npm run dev
 ```
 
-ブラウザで [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) を開き、結果を確認してください。
+ブラウザで [http://localhost:3000](http://localhost:3000) を開き、結果を確認してください。
 
 ## 機能
 
