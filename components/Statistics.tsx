@@ -13,7 +13,6 @@ import {
 import { ja } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 
-// クラス結合用の簡易ユーティリティ
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -56,12 +55,10 @@ export default function Statistics() {
   const startDayOfWeek = getDay(monthStart);
   const emptyDays = Array(startDayOfWeek).fill(null);
 
-  // ゼロ埋めヘルパー
+  // ゼロ埋め
   const pad = (num: number) => num.toString().padStart(2, "0");
 
-  /**
-   * カレンダーセル用: 00:00:00 形式
-   */
+  // カレンダーセル用: 00:00:00 形式
   const formatTimeHHMMSS = (totalSeconds: number) => {
     const h = Math.floor(totalSeconds / 3600);
     const m = Math.floor((totalSeconds % 3600) / 60);
@@ -69,9 +66,7 @@ export default function Statistics() {
     return `${pad(h)}:${pad(m)}:${pad(s)}`;
   };
 
-  /**
-   * 月合計用: 00時間00分00秒 形式
-   */
+  // 月合計用: 00時間00分00秒 形式
   const formatTimeJP = (totalSeconds: number) => {
     const h = Math.floor(totalSeconds / 3600);
     const m = Math.floor((totalSeconds % 3600) / 60);

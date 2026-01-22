@@ -12,10 +12,8 @@ import {
 } from "lucide-react";
 
 type TimerMode = "work" | "rest";
-// finished 状態を追加: 作業完了または中断時の結果表示用
 type TimerStatus = "idle" | "running" | "paused" | "finished";
 
-// --- サブコンポーネント: 数値入力 ---
 type NumberInputProps = {
   label: string;
   valueStr: string;
@@ -253,7 +251,7 @@ export default function PomodoroTimer({
     if (status === "idle") {
       const w = parseInt(workMinutesStr) || 25;
       const r = parseInt(restMinutesStr) || 5;
-      // アイドル時は通常休憩か作業時間のプレビューのみでOK
+      // アイドル時は通常休憩か作業時間のプレビューのみ
       const newTotalTime = mode === "work" ? w * 60 : r * 60;
       setTimeLeft(newTotalTime);
       setTotalTime(newTotalTime);
@@ -401,7 +399,6 @@ export default function PomodoroTimer({
                 </div>
               </div>
 
-              {/* 3列レイアウトに変更 */}
               <div className="flex items-center space-x-3">
                 <NumberInput
                   label="作業 (分)"

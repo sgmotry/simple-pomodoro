@@ -34,7 +34,6 @@ export default function Home() {
           onClick={() => setActiveTab("statistics")}
           disabled={isTimerLocked} // ロック中はクリック無効
           className={`flex items-center space-x-2 rounded-full px-6 py-2 transition-all duration-300 cursor-pointer ${
-            // ロック中のスタイル設定 (優先度高)
             isTimerLocked
               ? "cursor-not-allowed bg-slate-100 text-slate-300 opacity-60"
               : activeTab === "statistics"
