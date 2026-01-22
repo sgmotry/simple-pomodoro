@@ -67,11 +67,11 @@ npm run dev
 
 ## 使用技術
 
-- **Next.js** 
-- **TypeScript** 
-- **Tailwind CSS** 
-- **Prisma** 
-- **SQLite** 
+- **Next.js**
+- **TypeScript**
+- **Tailwind CSS**
+- **Prisma**
+- **SQLite**
 
 ## 使い方
 
